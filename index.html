@@ -2,9 +2,9 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Aggiunta per migliore compatibilità -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Word Rain - Compatible</title>
+    <title>Matrix Word Rain - Max Compatibility</title>
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; }
         canvas { display: block; position: absolute; top: 0; left: 0; }
@@ -40,7 +40,8 @@
     // ###                                                               ###
     // #####################################################################
 
-    var alphabet_matrix = 'アァカサタナハマヤャラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    // --- MODIFICA FONDAMENTALE: Rimossi i caratteri Katakana ---
+    var alphabet_matrix = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var rainDrops = [];
     for (var i = 0; i < columns; i++) {
         rainDrops[i] = 1;
@@ -91,6 +92,7 @@
         wordsContext.clearRect(0, 0, wordsCanvas.width, wordsCanvas.height);
         
         wordsContext.font = 'bold ' + fontSize + 'px monospace';
+        wordsContext.fillStyle = '#39FF14';
 
         for (var i = activeWords.length - 1; i >= 0; i--) {
             var word = activeWords[i];
@@ -101,11 +103,6 @@
                 var yPos = word.y - (j * fontSize);
                 
                 if (yPos > 0 && yPos < wordsCanvas.height) {
-                    if (j === 0) {
-                        wordsContext.fillStyle = '#39FF14'; 
-                    } else {
-                        wordsContext.fillStyle = '#94FDD4';
-                    }
                     var minAlpha = 0.3;
                     var alpha = 1.0 - (j / (word.text.length * 1.5));
                     wordsContext.globalAlpha = Math.max(alpha, minAlpha);
