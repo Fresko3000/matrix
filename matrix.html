@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Word Rain - Reversed</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; }
+        canvas { display: block; position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <canvas id="wordsCanvas"></canvas>
+
+    <script>
+    // #####################################################################
+    // ###                                                               ###
+    // ###      INIZIO BLOCCO 1: CONFIGURAZIONE GENERALE                 ###
+    // ###                                                               ###
+    // #####################################################################
+
+    const matrixCanvas = document.getElementById('matrixCanvas');
+    const matrixContext = matrixCanvas.getContext('2d');
+    const wordsCanvas = document.getElementById('wordsCanvas');
+    const wordsContext = wordsCanvas.getContext('2d');
+
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+    wordsCanvas.width = window.innerWidth;
+    wordsCanvas.height = window.innerHeight;
+
+    const fontSize = 16;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      FINE BLOCCO 1: CONFIGURAZIONE GENERALE                   ###
+    // ###                                                               ###
+    // #####################################################################
+
+
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      INIZIO BLOCCO 2: LOGICA PER LA PIOGGIA MATRIX (LIVELLO 1)  ###
+    // ###      (Questo blocco non viene toccato)                         ###
+    // #####################################################################
+
+    const alphabet_matrix = 'アァカサタナハマヤャラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const rainDrops = [];
+    for (let i = 0; i < columns; i++) {
+        rainDrops[i] = 1;
+    }
+
+    function drawMatrix() {
+        matrixContext.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        matrixContext.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+        
+        matrixContext.fillStyle = '#0F0';
+        matrixContext.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < rainDrops.length; i++) {
+            const text = alphabet_matrix.charAt(Math.floor(Math.random() * alphabet_matrix.length));
+            matrixContext.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+            if (rainDrops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                rainDrops[i] = 0;
+            }
+            rainDrops[i]++;
+        }
+    }
+    
+    setInterval(drawMatrix, 33);
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      FINE BLOCCO 2: LOGICA PER LA PIOGGIA MATRIX               ###
+    // ###                                                               ###
+    // #####################################################################
+
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      INIZIO BLOCCO 3: LOGICA PER LE PAROLE SPECIALI (LIVELLO 2) ###
+    // ###      (Qui ci sono le modifiche)                                ###
+    // #####################################################################
+
+    const specialWords = ["MATRIX", "NEO", "ZION", "FRESKO", "TRINITY", "MORPHEUS"];
+    let activeWords = []; 
+
+    function triggerSpecialWord() {
+        const randomColumn = Math.floor(Math.random() * columns);
+        const randomWord = specialWords[Math.floor(Math.random() * specialWords.length)];
+        
+        activeWords.push({
+            text: randomWord,
+            x: randomColumn * fontSize,
+            y: 0,
+            speed: 4.5 
+        });
+    }
+
+    function drawWords() {
+        wordsContext.clearRect(0, 0, wordsCanvas.width, wordsCanvas.height);
+        
+        wordsContext.font = `bold ${fontSize}px monospace`;
+        // Impostiamo il colore una sola volta, useremo l'alpha per la scia
+        wordsContext.fillStyle = '#39FF14'; // Verde Elettrico per tutta la parola
+
+        for (let i = activeWords.length - 1; i >= 0; i--) {
+            const word = activeWords[i];
+            
+            for (let j = 0; j < word.text.length; j++) {
+                const charIndex = word.text.length - 1 - j;
+                const char = word.text[charIndex];
+
+                const yPos = word.y - (j * fontSize);
+                
+                if (yPos > 0 && yPos < wordsCanvas.height) {
+                    
+                    // --- NUOVA LOGICA DI TRASPARENZA PER LA LEGGIBILITÀ ---
+                    // La "testa" (j === 0) è completamente opaca (alpha = 1.0).
+                    // Le lettere della scia diventano progressivamente più trasparenti,
+                    // ma non scompaiono mai del tutto, arrivando a un minimo di 30% di opacità.
+                    const minAlpha = 0.3;
+                    const alpha = 1.0 - (j / (word.text.length * 1.5)); // Moltiplicatore per rendere la scia più lunga
+                    
+                    // Applica la trasparenza, assicurandosi che non scenda sotto il minimo
+                    wordsContext.globalAlpha = Math.max(alpha, minAlpha);
+                    
+                    wordsContext.fillText(char, word.x, yPos);
+                }
+            }
+            
+            // Resetta l'alpha a 1.0 per non influenzare altri disegni
+            wordsContext.globalAlpha = 1.0; 
+
+            word.y += word.speed;
+
+            if (word.y - (word.text.length * fontSize) > wordsCanvas.height) {
+                activeWords.splice(i, 1);
+            }
+        }
+    }
+        
+    setInterval(drawWords, 33);
+    
+    setInterval(triggerSpecialWord, 5000);
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      FINE BLOCCO 3: LOGICA PER LE PAROLE SPECIALI              ###
+    // ###                                                               ###
+    // #####################################################################
+
+
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      INIZIO BLOCCO 4: GESTIONE FINESTRA                       ###
+    // ###      (Questo blocco non viene toccato)                         ###
+    // #####################################################################
+
+    window.addEventListener('resize', () => {
+        location.reload();
+    });
+
+    // #####################################################################
+    // ###                                                               ###
+    // ###      FINE BLOCCO 4: GESTIONE FINESTRA                         ###
+    // ###                                                               ###
+    // #####################################################################
+    </script>
+</body>
+</html>
