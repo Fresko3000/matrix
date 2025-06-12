@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Word Rain - Max Compatibility</title>
+    <title>Matrix Word Rain - ASCII</title>
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; }
         canvas { display: block; position: absolute; top: 0; left: 0; }
@@ -16,9 +16,7 @@
 
     <script>
     // #####################################################################
-    // ###                                                               ###
-    // ###      BLOCCO 1: CONFIGURAZIONE GENERALE                        ###
-    // ###                                                               ###
+    // ### BLOCCO 1: CONFIGURAZIONE GENERALE
     // #####################################################################
 
     var matrixCanvas = document.getElementById('matrixCanvas');
@@ -35,13 +33,10 @@
     var columns = Math.floor(matrixCanvas.width / fontSize);
 
     // #####################################################################
-    // ###                                                               ###
-    // ###      BLOCCO 2: LOGICA PER LA PIOGGIA MATRIX (LIVELLO 1)         ###
-    // ###                                                               ###
+    // ### BLOCCO 2: LOGICA PER LA PIOGGIA MATRIX (LIVELLO 1)
     // #####################################################################
 
-    // --- MODIFICA FONDAMENTALE: Rimossi i caratteri Katakana ---
-    var alphabet_matrix = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var alphabet_matrix = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Solo caratteri ASCII
     var rainDrops = [];
     for (var i = 0; i < columns; i++) {
         rainDrops[i] = 1;
@@ -68,9 +63,7 @@
     setInterval(drawMatrix, 33);
 
     // #####################################################################
-    // ###                                                               ###
-    // ###      BLOCCO 3: LOGICA PER LE PAROLE SPECIALI (LIVELLO 2)        ###
-    // ###                                                               ###
+    // ### BLOCCO 3: LOGICA PER LE PAROLE SPECIALI (LIVELLO 2)
     // #####################################################################
 
     var specialWords = ["MATRIX", "NEO", "ZION", "FRESKO", "TRINITY", "MORPHEUS"];
@@ -123,9 +116,7 @@
     setInterval(triggerSpecialWord, 5000);
 
     // #####################################################################
-    // ###                                                               ###
-    // ###      BLOCCO 4: GESTIONE FINESTRA                              ###
-    // ###                                                               ###
+    // ### BLOCCO 4: GESTIONE FINESTRA
     // #####################################################################
 
     window.addEventListener('resize', function() {
